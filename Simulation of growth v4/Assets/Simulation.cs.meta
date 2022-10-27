@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 76abf63fa4f5ea64093eb113e8b2c446
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - organismPrefab: {instanceID: 0}
+  - plantPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
