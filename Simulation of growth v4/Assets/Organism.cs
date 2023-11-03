@@ -128,19 +128,8 @@ public class Organism : MonoBehaviour
                 gameObject.transform.position = new Vector3(x, y, z);
                 running = false;
             }
-            else
-            {
-                counter += 1;
-                if (counter == 1000)
-                {
-                    Debug.Log("infinite loop in Organism.cs line 74");
-                    running = false;
-                }
-            }
+
         }
-
-
-
 
         if (diet == 0)
         {
@@ -195,87 +184,10 @@ public class Organism : MonoBehaviour
         }
         
         GetComponent<SphereCollider>().center = new Vector3(0, 0, 0);
-        /*
-        switch (model)
-        {
-            case 0:
-                meshFilter.mesh = wolfMesh;
-                meshRenderer.material = wolfMat;
-                break;
-            case 1:
-                meshFilter.mesh = goatMesh;
-                meshRenderer.material = goatMat;
-                transform.localScale = transform.localScale * 15;
-                gameObject.GetComponent<SphereCollider>().radius /= 15;
-                //transform.localScale = new Vector3(15, 15, 15);
-                break;
-            case 2:
-                meshFilter.mesh = lionMesh;
-                meshRenderer.material = lionMat;
-                transform.localScale = transform.localScale * 3;
-                gameObject.GetComponent<SphereCollider>().radius /= 3;
-                //transform.localScale = new Vector3(3, 3, 3);
-                break;
-            case 3:
-                meshFilter.mesh = rabbitMesh;
-                meshRenderer.material = rabbitMat;
-                transform.localScale = transform.localScale * 10;
-                gameObject.GetComponent<SphereCollider>().radius /= 10;
-                //transform.localScale = new Vector3(10, 10, 10);
-                break;
-            case 4:
-                meshFilter.mesh = bearMesh;
-                meshRenderer.material = bearMat;
-                transform.localScale = transform.localScale * 6;
-                gameObject.GetComponent<SphereCollider>().radius /= 6;
-                //transform.localScale = new Vector3(6, 6, 6);
-                break;
-            case 5:
-                meshFilter.mesh = reindeerMesh;
-                meshRenderer.material = reindeerMat;
-                transform.localScale = transform.localScale * 15;
-                gameObject.GetComponent<SphereCollider>().radius /= 15;
-                //transform.localScale = new Vector3(15, 15, 15);
-                break;
-        }
-        */
-
 
     }
 
-    private void detection()
-    {
-
-    }
-
-
-
-    private void sight()
-    {
-
-    }
-
-    /*
-    private void OnCollisionStay(Collision collision)
-    {
-        Debug.Log("Collision");
-        Organism organism = collision.gameObject.GetComponent<Organism>();
-
-        if ((Diet == 1) && (organism.Diet == 0)) //If our organism's diet is carnivore and collided organism is herbivore
-        {
-            prey.Add(collision.gameObject);
-        }
-        else if (Diet == organism.Diet)
-        {
-            mates.Add(collision.gameObject);
-        }
-        else if ((Diet == 0) && (organism.Diet == 1))
-        {
-            threats.Add(collision.gameObject);
-        }
-    }
-    */
-
+    //Returns the vector to the nearest water
     private Vector3 NearestWater()
     {
         Vector3 coordinate = transform.position;
@@ -454,7 +366,6 @@ public class Organism : MonoBehaviour
                         nearestWater = tempNearestWater;
                     }
 
-
                 }
                 y--;
             }
@@ -474,7 +385,6 @@ public class Organism : MonoBehaviour
                         nearestWater = tempNearestWater;
                     }
 
-
                 }
                 x++;
             }
@@ -489,11 +399,10 @@ public class Organism : MonoBehaviour
 
         return nearestWater;
 
-
-
         //return Vector3.zero;
     }
 
+    //Returns true if there is water present at coordinates x,y
     private bool waterCheck(int x, int y)
     {
         if ((x >= 256) || (x < 0) || (y >= 256) || (y < 0))
@@ -510,6 +419,7 @@ public class Organism : MonoBehaviour
         return false;
     }
 
+    //Returns the most threatening organism
     private GameObject evaluateThreat()
     {
         GameObject closestThreat = null;
@@ -528,6 +438,7 @@ public class Organism : MonoBehaviour
         return closestThreat;
     }
 
+    //Kills organism if hunger or thirst exceeds limit. Increments hunger, thirst and lust
     private void checkStats()
     {
         if ((hunger > 100) || (thirst > 100))
@@ -546,6 +457,7 @@ public class Organism : MonoBehaviour
         }
     }
 
+    //Kills organism and records it and marks the death location
     private void die()
     {
         meshFilter.mesh = arrowMesh;
@@ -587,6 +499,7 @@ public class Organism : MonoBehaviour
         Destroy(gameObject.GetComponent<SphereCollider>());
     }
 
+    //Moves the organism
     private void movement()
     {
         if (moving == true)
@@ -641,21 +554,17 @@ public class Organism : MonoBehaviour
                 {
                     transform.rotation = Quaternion.LookRotation(DesiredObject, DesiredObject);
                 }
-                
-
 
             }
-        
 
             Vector3 position = transform.position;
             position.y = terrain.SampleHeight(transform.position);
             transform.position = position;
         }
 
-        
-
     }
 
+    //Returns vector to most desired object
     private Vector3 desired()
     {
         float greatestDesireValue = 0;
@@ -705,7 +614,6 @@ public class Organism : MonoBehaviour
             }
         }
         
-
         
 
         return greatestDesireObject;
@@ -757,6 +665,7 @@ public class Organism : MonoBehaviour
         return desire;
     }
 
+    //Moves organism randomly
     private void randomMovement()
     {
         if ((touchingBorder() == true) || (terrainGenerator.WaterMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)] == true) || (searchDirection == Vector3.zero))
@@ -791,6 +700,7 @@ public class Organism : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(searchDirection, searchDirection);
     }
 
+    //Returns true if organism is on map border
     private bool touchingBorder()
     {
         if ((transform.position.x >= 255) || (transform.position.x <= 1) || (transform.position.z >= 255) || (transform.position.z <= 1))
@@ -803,6 +713,7 @@ public class Organism : MonoBehaviour
         }
     }
 
+    //Returns true if water is obstructing the path between point1 and point2
     private bool waterObstruction(Vector3 point1, Vector3 point2)
     {
         bool isObstructed = false;
@@ -812,56 +723,18 @@ public class Organism : MonoBehaviour
         
         if (point1.x < point2.x)
         {
-            /*
-            deltaX = point2.x - point1.x;
-            deltaY = point2.z - point1.z;
-            float error = -1;
-            //float slope = deltaY / deltaX;
-            float slope = Mathf.Abs(deltaY / deltaX);
-            int y = Mathf.RoundToInt(point1.z);
 
-
-
-            for (int x = Mathf.RoundToInt(point1.x); x < Mathf.RoundToInt(point2.x); x++)
-            {
-                Debug.DrawRay(new Vector3(x, 0, y), new Vector3(0, 20, 0), Color.blue, 1);
-                if (terrainGenerator.WaterMap[x, y] == true)
-                {
-                    isObstructed = true;
-
-                }
-
-                error += slope;
-                if ((error >= 0) && (point1.z > point2.z))
-                {
-                    y -= 1;
-                    error -= 1;
-                    Debug.Log(slope);
-                }
-                else if ((error >= 0) && (point2.z > point1.z))
-                {
-                    y += 1;
-                    error -= 1;
-                    Debug.Log(slope);
-                }
-            }
-            */
             deltaX = point2.x - point1.x;
             deltaY = point2.z - point1.z;
 
-            //deltaX = point2.z - point1.z;
-            //deltaY = point2.x - point1.x;
             float error = -1;
-            //float slope = deltaY / deltaX;
             float slope = Mathf.Abs(deltaY / deltaX);
 
             if (slope < 1)
             {
                 float y = point1.z;
-                //Debug.Log("5");
                 for (int x = Mathf.RoundToInt(point1.x); x < Mathf.RoundToInt(point2.x); x++)
                 {
-                    //Debug.Log("7");
                     //Debug.DrawRay(new Vector3(x, 0, y), new Vector3(0, 20, 0), Color.blue, 1);
                     if (terrainGenerator.WaterMap[x, Mathf.RoundToInt(y)] == true)
                     {
@@ -881,7 +754,6 @@ public class Organism : MonoBehaviour
                     {
                         y += 1;
                         error -= 1;
-                        //Debug.Log("2");
 
                     }
                 }
@@ -890,7 +762,6 @@ public class Organism : MonoBehaviour
             else
             {
                 float x = point1.x;
-                //Debug.Log("6");
 
                 if (point1.z < point2.z)
                 {
@@ -910,14 +781,12 @@ public class Organism : MonoBehaviour
                         {
                             x -= 1;
                             error -= 1;
-                            //Debug.Log("10");
 
                         }
                         else if ((error >= 0) && (point2.x > point1.x))
                         {
                             x += 1;
                             error -= 1;
-                            //Debug.Log("11");
 
                         }
                     }
@@ -926,8 +795,6 @@ public class Organism : MonoBehaviour
                 {
                     for (int y = Mathf.RoundToInt(point1.z); y > Mathf.RoundToInt(point2.z); y--)
                     {
-                        //Debug.Log("8");
-                        //Debug.Log("test");
                         //Debug.DrawRay(new Vector3(x, 0, y), new Vector3(0, 20, 0), Color.blue, 1);
                         if (terrainGenerator.WaterMap[Mathf.RoundToInt(x), y] == true)
                         {
@@ -940,14 +807,12 @@ public class Organism : MonoBehaviour
                         {
                             x -= 1;
                             error -= 1;
-                            //Debug.Log("3");
 
                         }
                         else if ((error >= 0) && (point2.x > point1.x))
                         {
                             x += 1;
                             error -= 1;
-                            //Debug.Log("4");
 
                         }
                     }
@@ -961,10 +826,7 @@ public class Organism : MonoBehaviour
             deltaX = point2.x - point1.x;
             deltaY = point2.z - point1.z;
 
-            //deltaX = point2.z - point1.z;
-            //deltaY = point2.x - point1.x;
             float error = -1;
-            //float slope = deltaY / deltaX;
             float slope = Mathf.Abs(deltaY / deltaX);
             
             if (slope < 1)
@@ -1006,7 +868,6 @@ public class Organism : MonoBehaviour
                 {
                     for (int y = Mathf.RoundToInt(point1.z); y < Mathf.RoundToInt(point2.z); y++)
                     {
-                        //Debug.Log("test");
                         //Debug.DrawRay(new Vector3(x, 0, y), new Vector3(0, 20, 0), Color.blue, 1);
                         if (terrainGenerator.WaterMap[Mathf.RoundToInt(x), y] == true)
                         {
@@ -1059,18 +920,14 @@ public class Organism : MonoBehaviour
 
                         }
                     }
-                }
-
-                
+                }    
             }
-            
         }
         
-        
-
         return isObstructed;
     }
 
+    //Performs an action
     private void action()
     {
         
@@ -1081,18 +938,7 @@ public class Organism : MonoBehaviour
                 List<GameObject> tempPreyList = prey;
                 for (int i = 0; i < prey.Count; i++)
                 {
-                    /*
-                    bool active;
-                    try
-                    {
-                        active = prey[i].activeInHierarchy;
-                    }
-                    catch (System.Exception)
-                    {
-                        active = false;
-                        throw;
-                    }
-                    */
+
                     if (prey[i] != null)
                     {
                     
@@ -1127,29 +973,6 @@ public class Organism : MonoBehaviour
                 prey = tempPreyList;
             }
 
-            /*
-            List<GameObject> tempPreyList = prey;
-            foreach (GameObject Prey in prey)
-            {
-                
-                MeshFilter meshFilter = GetComponent<MeshFilter>();
-                if (bounds.Intersects(meshFilter.mesh.bounds) == true)
-                {
-                    Organism organism;
-                    if (Prey.TryGetComponent<Organism>(out organism) == true)
-                    {
-                        StartCoroutine(consumeOrganism(Prey));
-                        
-                    }
-                    else
-                    {
-                        StartCoroutine(consumePlant(Prey));
-                    }
-                    tempPreyList.Remove(Prey);
-                }
-            }
-            prey = tempPreyList;
-            */
             if (lust >= 40)
             {
                 List<GameObject> tempMatesList = mates;
@@ -1171,20 +994,6 @@ public class Organism : MonoBehaviour
             }
 
 
-            /*
-            foreach (GameObject Mate in mates)
-            {
-                //Organism mateOrganism = Mate.GetComponent<Organism>();
-                Debug.Log("reproduce2");
-
-                Vector3 matePosition = Mate.transform.position;
-
-                if (((transform.position.x - 1 <= matePosition.x) && (matePosition.x <= transform.position.x + 1)) && ((transform.position.z - 1 <= matePosition.z) && (matePosition.z <= transform.position.z + 1)))
-                {
-                    StartCoroutine(reproduce(Mate));
-                }
-            }
-            */
             if (thirst >= 10)
             {
                 if (terrainGenerator.WaterMap[Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)] == true)
@@ -1223,8 +1032,7 @@ public class Organism : MonoBehaviour
 
     private IEnumerator reproduce(GameObject mate)
     {
-        
-
+    
         Organism mateOrganism = mate.GetComponent<Organism>();
 
         if (Genome > mateOrganism.Genome)
@@ -1310,6 +1118,7 @@ public class Organism : MonoBehaviour
 
     }
 
+    //Removes dead objects from lists
     private void removeDeadObjects()
     {
         List<GameObject> tempPrey = prey;
@@ -1428,26 +1237,7 @@ public class Organism : MonoBehaviour
                     Physics.Raycast(origin, collision.transform.position - transform.position, out hitInfo, maxDistance, mask);
 
                     //Debug.DrawRay(origin, collision.transform.position - transform.position, Color.red, 3000);
-                    /*
-                    Debug.Log("Obama" + collision.transform.position);
-                    
-                    Debug.Log("");
-                    Debug.Log(gameObject.name);
-                    Debug.Log(collision.gameObject.name);
-                    
-                    Debug.Log(distanceToObject);
-                    Debug.Log(hitInfo.distance);
-                    
-                    try
-                    {
-                        Debug.Log(hitInfo.collider.gameObject.name);
-                    }
-                    catch (System.Exception)
-                    {
-                        Debug.Log("no collision");
-                        
-                    }
-                    */
+
 
                     if (hitInfo.distance == 0)
                     {
@@ -1464,13 +1254,6 @@ public class Organism : MonoBehaviour
                         //Debug.Log("Test2");
                         mates.Add(collision.gameObject);
                     }
-
-                    /*
-                    if (hitInfo.collider == collision)
-                    {
-                        mates.Add(collision.gameObject);
-                    }
-                    */
 
                     //collision.GetComponent<SphereCollider>().enabled = true;
                 }
